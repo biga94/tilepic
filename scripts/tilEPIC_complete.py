@@ -26,9 +26,9 @@ def create_mosaic(image_list, output_path, vertical_shift_percent=0.5, horizonta
     for img_file in image_list:
         try:
             img = Image.open(img_file)
-            img.verify()  # Verifica l'integrità dell'immagine
-            img = Image.open(img_file)  # Ri-apri l'immagine dopo verifica
-            img.load()  # Carica i dati dell'immagine
+            img.verify()
+            img = Image.open(img_file)
+            img.load()
             images.append(img)
         except (IOError, SyntaxError) as e:
             print(f"Immagine {img_file} corrotta o non valida: {e}")
@@ -93,15 +93,15 @@ def create_final_chip(image_dir, output_path, vertical_shift_percent=0.5, horizo
     # Salva il chip finale
     final_chip_image.save(output_path, format='PNG')
 
-def main(image_dir, output_path, vertical_shift_percent, horizontal_shift_percent):
+def main(image_dir, output_path, vertical_shift_percent=0.5, horizontal_shift_percent=0.048):
     create_final_chip(image_dir, output_path, vertical_shift_percent, horizontal_shift_percent)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Crea il chip finale unendo tutti i mosaici dei campioni.')
-    parser.add_argument('image_dir', type=str, help='Directory contenente le immagini')
-    parser.add_argument('output_path', type=str, help='Percorso per salvare il chip finale')
-    parser.add_argument('--vertical_shift_percent', type=float, default=0.5, help='Percentuale di sovrapposizione verticale (default: 0.5)')
-    parser.add_argument('--horizontal_shift_percent', type=float, default=0.048, help='Percentuale di sovrapposizione orizzontale (default: 0.048)')
+    parser = argparse.ArgumentParser(description='Create the final chip by merging all sample mosaics.')
+    parser.add_argument('image_dir', type=str, help='Directory containing the images')
+    parser.add_argument('output_path', type=str, help='Path to save the final chip')
+    parser.add_argument('--vertical_shift_percent', type=float, default=0.5, help='Vertical overlap percentage (default: 0.5)')
+    parser.add_argument('--horizontal_shift_percent', type=float, default=0.048, help='Horizontal overlap percentage (default: 0.048)')
 
     args = parser.parse_args()
     main(args.image_dir, args.output_path, args.vertical_shift_percent, args.horizontal_shift_percent)
