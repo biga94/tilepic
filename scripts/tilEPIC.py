@@ -2,20 +2,19 @@ from PIL import Image, ImageFile
 import os
 import argparse
 
-# Aumenta il limite per la dimensione delle immagini per evitare DecompressionBombError
 Image.MAX_IMAGE_PIXELS = None
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 def get_t_value(filename):
     base_name = os.path.basename(filename)
     t_index = base_name.find('_T') + 2
-    t_value = int(base_name[t_index:t_index+2])  # Assumiamo che T sia seguito da due cifre
+    t_value = int(base_name[t_index:t_index+2])
     return t_value
 
 def get_r_value(filename):
     base_name = os.path.basename(filename)
     r_index = base_name.find('_R') + 2
-    r_value = int(base_name[r_index:r_index+2])  # Assumiamo che R sia seguito da due cifre
+    r_value = int(base_name[r_index:r_index+2])
     return r_value
 
 def get_num_value(filename):
@@ -36,11 +35,11 @@ def create_mosaic(image_list, output_path, vertical_shift_percent=0.5, horizonta
             img.load()
             images.append(img)
         except (IOError, SyntaxError) as e:
-            print(f"Immagine {img_file} corrotta o non valida: {e}")
+            print(f"Image {img_file} corrupted or not found: {e}")
             continue
 
     if not images:
-        print("Nessuna immagine valida trovata.")
+        print("No image found.")
         return
 
     img_width, img_height = images[0].size
