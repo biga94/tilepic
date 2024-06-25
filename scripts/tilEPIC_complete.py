@@ -3,14 +3,13 @@ import os
 from concurrent.futures import ProcessPoolExecutor
 import argparse
 
-# Aumenta il limite per la dimensione delle immagini per evitare DecompressionBombError
 Image.MAX_IMAGE_PIXELS = None
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 def get_t_value(filename):
     base_name = os.path.basename(filename)
     t_index = base_name.find('_T') + 2
-    t_value = int(base_name[t_index:t_index+2])  # Assumiamo che T sia seguito da due cifre
+    t_value = int(base_name[t_index:t_index+2])
     return t_value
 
 def get_num_value(filename):
@@ -31,11 +30,11 @@ def create_mosaic(image_list, output_path, vertical_shift_percent=0.5, horizonta
             img.load()
             images.append(img)
         except (IOError, SyntaxError) as e:
-            print(f"Immagine {img_file} corrotta o non valida: {e}")
+            print(f"Immage {img_file} corrupted or not valid: {e}")
             continue
 
     if not images:
-        print("Nessuna immagine valida trovata.")
+        print("No images found.")
         return
 
     img_width, img_height = images[0].size
@@ -69,20 +68,16 @@ def create_final_chip(image_dir, output_path, vertical_shift_percent=0.5, horizo
     sample_prefixes = [f"R0{i}C01" for i in range(1, 9)]
     mosaic_paths = []
 
-    # Utilizza ProcessPoolExecutor per parallelizzare la creazione dei mosaici
     with ProcessPoolExecutor() as executor:
         futures = [executor.submit(process_sample, prefix, image_files, image_dir, vertical_shift_percent, horizontal_shift_percent) for prefix in sample_prefixes]
         for future in futures:
             mosaic_paths.append(future.result())
 
-    # Carica tutti i mosaici
     mosaics = [Image.open(mosaic) for mosaic in mosaic_paths]
 
-    # Assumi che tutti i mosaici abbiano la stessa larghezza
     mosaic_width = mosaics[0].width
     mosaic_height = mosaics[0].height
 
-    # Crea una nuova immagine per il chip finale
     final_chip_height = mosaic_height * len(mosaics)
     final_chip_image = Image.new('RGB', (mosaic_width, final_chip_height))
 
