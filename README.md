@@ -65,3 +65,7 @@ python tilEPIC_complete.py "path/to/image/directory" "path/to/final/output.png" 
 ## Contribution
 
 Contributions are welcome! Feel free to open issues or pull requests!
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
